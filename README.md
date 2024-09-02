@@ -8,11 +8,9 @@ This action is designed to be used for cherry-pick commits from pull requests in
 
 GitHub Cherry Pick Action will:
 
-- Checkout triggered action.
-- Create new branch name `cherry-pick-${GITHUB_SHA}` from `branch` input.
-- Cherry-picking `${GITHUB_SHA}` into created `branch`
-- Push new `branch` to remote
-- Open pull request to `branch`
+- Switch to the `branch` input.
+- Cherry-pick `${GITHUB_SHA}` into `branch`
+- Push new commits added to `branch` to remote
 
 > *NOTE:* The `GITHUB_SHA` is taken from the GitHub context, specifically from the `merge_commit_sha` attribute of the pull request object.
 
