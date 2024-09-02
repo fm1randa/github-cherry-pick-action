@@ -3,7 +3,7 @@ import * as io from '@actions/io'
 import * as exec from '@actions/exec'
 import * as utils from './utils'
 import * as github from '@actions/github'
-import {Inputs, createPullRequest} from './github-helper'
+import {Inputs} from './github-helper'
 import {PullRequest} from '@octokit/webhooks-types'
 
 const CHERRYPICK_EMPTY =
@@ -33,9 +33,6 @@ export async function run(): Promise<void> {
     // see https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#get-a-pull-request
     const githubSha = (github.context.payload.pull_request as PullRequest)
       .merge_commit_sha
-    const prBranch = inputs.cherryPickBranch
-      ? inputs.cherryPickBranch
-      : `cherry-pick-${inputs.branch}-${githubSha}`
 
     // Configure the committer and author
     core.startGroup('Configuring the committer and author')
@@ -59,9 +56,9 @@ export async function run(): Promise<void> {
     await gitExecution(['fetch', '--all'])
     core.endGroup()
 
-    // Create branch new branch
-    core.startGroup(`Create new branch ${prBranch} from ${inputs.branch}`)
-    await gitExecution(['checkout', '-b', prBranch, `origin/${inputs.branch}`])
+    // Switch to desired branch
+    core.startGroup(`Switching to branch ${inputs.branch}`)
+    await gitExecution(['switch', inputs.branch])
     core.endGroup()
 
     // Cherry pick
@@ -79,21 +76,13 @@ export async function run(): Promise<void> {
     }
     core.endGroup()
 
-    // Push new branch
-    core.startGroup('Push new branch to remote')
+    // Push cherry-picked commits to the remote
+    core.startGroup('Push changes to remote')
     if (inputs.force) {
-      await gitExecution(['push', '-u', 'origin', `${prBranch}`, '--force'])
+      await gitExecution(['push', '--force'])
     } else {
-      await gitExecution(['push', '-u', 'origin', `${prBranch}`])
+      await gitExecution(['push'])
     }
-    core.endGroup()
-
-    // Create pull request
-    core.startGroup('Opening pull request')
-    const pull = await createPullRequest(inputs, prBranch)
-    core.setOutput('data', JSON.stringify(pull.data))
-    core.setOutput('number', pull.data.number)
-    core.setOutput('html_url', pull.data.html_url)
     core.endGroup()
   } catch (err: unknown) {
     if (err instanceof Error) {
