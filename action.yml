@@ -1,4 +1,4 @@
-name: "GitHub cherry pick action"
+name: "Cherry-pick to a branch and push"
 description: "GitHub action for cherry pick commits from Pull Requests into Release branches"
 inputs:
   token:
