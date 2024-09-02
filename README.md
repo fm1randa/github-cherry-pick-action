@@ -56,20 +56,6 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-### Using outputs:
-```yml
-steps:
-  - uses: actions/checkout@v3
-  - uses: carloscastrojumo/github-cherry-pick-action@v1.0.1
-    id: new-issue
-    with:
-      branch: release-v2.0
-      labels: cherry-pick
-    - run: |
-        echo "${{ steps.new-issue.outputs.data }}"
-        echo "${{ steps.new-issue.outputs.number }}" 
-        echo "${{ steps.new-issue.outputs.html_url }}"
-```
 ### Working with forked repositories
 
 If you are using this action while working with forked repositories (e.g. when you get pull requests from external contributors), you will have to adapt the trigger to avoid permission problems.
