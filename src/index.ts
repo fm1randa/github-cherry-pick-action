@@ -16,15 +16,7 @@ export async function run(): Promise<void> {
       committer: core.getInput('committer'),
       author: core.getInput('author'),
       branch: core.getInput('branch'),
-      title: core.getInput('title'),
-      body: core.getInput('body'),
-      force: utils.getInputAsBoolean('force'),
-      labels: utils.getInputAsArray('labels'),
-      inherit_labels: utils.getInputAsBoolean('inherit_labels'),
-      assignees: utils.getInputAsArray('assignees'),
-      reviewers: utils.getInputAsArray('reviewers'),
-      teamReviewers: utils.getInputAsArray('team-reviewers'),
-      cherryPickBranch: core.getInput('cherry-pick-branch')
+      force: utils.getInputAsBoolean('force')
     }
 
     core.info(`Cherry pick into branch ${inputs.branch}!`)
